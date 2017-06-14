@@ -15,6 +15,31 @@ $(document).ready(function () {
   // }
 })
 
+var colorNames = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)']
+var config = {
+  type: 'bar',
+  data: {
+    datasets: [{
+      data: [
+      ],
+      backgroundColor: [
+      ],
+      label: 'Dataset 1'
+    }],
+    labels: [
+    ]
+  },
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+}
+
 class GerenciadorTarefas {
   constructor (nProcessadores) {
     this.listaProcessadores = []
@@ -26,9 +51,22 @@ class GerenciadorTarefas {
     }
   }
 
+  drawChart (divId) {
+    for (var index = 0; index < this.listaProcessadores.length; index++) {
+      var element = this.listaProcessadores[index]
+      config.data.labels.push('Processador' + index)
+      var color = colorNames[index % colorNames.length]
+      config.data.datasets[0].data.push(element.makespan)
+      config.data.datasets[0].backgroundColor.push(color)
+    }
+    var ctx = $(divId).get(0).getContext('2d')
+    window.myDoughnut = new Chart(ctx, config)
+  }
+
   alocarTarefas (ite) {
     for (var i = 0; i < ite; i++) {
       this.gerarSolucao()
+      this.drawChart('#chart-area')
     }
   }
 
