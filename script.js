@@ -1,5 +1,6 @@
 var numeroProcessadores = 2
 var numeroIteracoes = 1
+var fatorPertubacao = 0.5 // Variar entre 0 e 1
 
 $(document).ready(function () {
   var gerenciador
@@ -8,7 +9,7 @@ $(document).ready(function () {
   gerenciador.criarNovaTarefa(10)
   gerenciador.criarNovaTarefa(2)
   gerenciador.criarNovaTarefa(5)
-  gerenciador.alocarTarefas(numeroIteracoes)
+  gerenciador.alocarTarefas(numeroIteracoes, fatorPertubacao)
   // var tarefas = gerenciador.getTarefas()
   // for (var i = 0; i < tarefas.length; i++) {
   //   console.log('Tempo tarefa ' + tarefas[i])
@@ -44,7 +45,8 @@ class GerenciadorTarefas {
   constructor (nProcessadores) {
     this.listaProcessadores = []
     this.melhorSolucao = []
-    this.listaTarefas = []
+    this.listaTarefasTotal = []
+    this.listaTarefasLivres = []
     for (var i = 0; i < nProcessadores; i++) {
       this.listaProcessadores[i] = new Processador()
       this.melhorSolucao[i] = new Processador()
@@ -63,21 +65,59 @@ class GerenciadorTarefas {
     window.myDoughnut = new Chart(ctx, config)
   }
 
-  alocarTarefas (ite) {
+  alocarTarefas (ite, fatorPertubacao) {
+    var melhorMakespan = Number.POSITIVE_INFINITY
+    var makespanAtual
     for (var i = 0; i < ite; i++) {
       this.gerarSolucao()
       this.drawChart('#chart-area')
+      makespanAtual = this.definirMakespanTotal(this.listaProcessadores)
+      if(melhorMakespan > makespanAtual){
+        melhorMakespan = makespanAtual
+        this.gravarMelhorSolucao()
+      }
+      if( i !== ite - 1){
+        // this.perturbarSolucaoAtual(fatorPertubacao)
+      }
+    }
+  }
+
+  perturbarSolucaoAtual (fatorPertubacao) {
+    var totalTarefasPerturbadas = Math.round(this.listaTarefasTotal.length * fatorPertubacao)
+    var tarefasPerturbadas = 0
+    console.log('Rand ' + Math.random())
+    while(totalTarefasPerturbadas !== tarefasPerturbadas){
+      for (var i = 0; i < this.listaProcessadores.length; i++) {
+        for (var j = 0; j < this.listaProcessadores[i].getTarefasAlocadas.length; j++) {
+          if(Math.random() > 0.5){
+            this.listaTarefasLivres.push(this.listaProcessadores[i].getTarefasAlocadas[j])
+            this.listaProcessadores[i].getTarefasAlocadas.slice(j, 1)
+            tarefasPerturbadas++
+            if(tarefasPerturbadas === totalTarefasPerturbadas){
+              return
+            }
+          }
+        }
+      }
+    }
+    console.log('AA')
+  }
+
+  gravarMelhorSolucao () {
+    for (var i = 0; i < this.listaProcessadores.length; i++) {
+      this.melhorSolucao[i].clonarTarefas(this.listaProcessadores[i])
     }
   }
 
   gerarSolucao () {
-    for (var i = 0; i < this.listaTarefas.length; i++) {
-      console.log('Tarefa com tempo ' + this.listaTarefas[i])
+    for (var i = 0; i < this.listaTarefasLivres.length; i++) {
+      console.log('Tarefa com tempo ' + this.listaTarefasLivres[i])
     }
     var processadorAtual
-    for (var j = 0; j < this.listaTarefas.length; j++) {
+    for (var j = 0; j < this.listaTarefasLivres.length; j++) {
       processadorAtual = this.verificarProcessadorMenorMakespan()
-      processadorAtual.alocarTarefa(this.listaTarefas[j])
+      processadorAtual.alocarTarefa(this.listaTarefasLivres[j])
+      this.listaTarefasLivres.splice(j, 1)
     }
     console.log('Total Makespan ' + this.definirMakespanTotal(this.listaProcessadores))
   }
@@ -104,11 +144,12 @@ class GerenciadorTarefas {
   }
 
   criarNovaTarefa (tempoTarefa) {
-    this.listaTarefas.push(tempoTarefa)
+    this.listaTarefasTotal.push(tempoTarefa)
+    this.listaTarefasLivres.push(tempoTarefa)
   }
 
   getTarefas () {
-    return this.listaTarefas
+    return this.listaTarefasTotal
   }
 }
 
@@ -135,9 +176,7 @@ class Processador {
 
   clonarTarefas (tarefas) {
     this.tarefasAlocadas = []
-    console.log('AAA')
     for (var i = 0; i < tarefas.length; i++) {
-      console.log('aa ' + tarefas[i])
       this.tarefasAlocadas[i] = tarefas[i]
     }
   }
