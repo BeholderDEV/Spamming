@@ -19,6 +19,8 @@
           <canvas id="chart-area" />
         </div>
         </div>
+        <canvas id="queue-canvas" width="800" height="600"></canvas>
+
       </div>
     </section>
 
@@ -28,6 +30,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" integrity="sha256-SiHXR50l06UwJvHhFY4e5vzwq75vEHH+8fFNpkXePr0=" crossorigin="anonymous"></script>
     <script src="GraphController.js"></script>
+    <script src="QueueRender.js"></script>
     <script src="script.js"></script>
+    <script>
+    //   window.onload = function () {
+    //     var gerenciador
+    //
+    //     gerenciador = new GerenciadorTarefas(numeroProcessadores)
+    //     gerenciador.criarNovaTarefa(10)
+    //     gerenciador.criarNovaTarefa(6)
+    //     gerenciador.criarNovaTarefa(1)
+    //     gerenciador.criarNovaTarefa(8)
+    //     gerenciador.alocarTarefas(numeroIteracoes)
+    //
+    //     var render = new QueueRender()
+    //     render.render('queue-canvas', gerenciador.listaProcessadores)
+    // }
+    </script>
   </body>
 </html>
