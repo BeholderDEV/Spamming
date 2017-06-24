@@ -1,5 +1,5 @@
 var numeroProcessadores = 2
-var numeroIteracoes = 1
+var numeroIteracoes = 2
 var fatorPertubacao = 0.5 // Variar entre 0 e 1
 
 $(document).ready(function () {
@@ -10,10 +10,8 @@ $(document).ready(function () {
   gerenciador.criarNovaTarefa(2)
   gerenciador.criarNovaTarefa(5)
   gerenciador.alocarTarefas(numeroIteracoes, fatorPertubacao)
-  // var tarefas = gerenciador.getTarefas()
-  // for (var i = 0; i < tarefas.length; i++) {
-  //   console.log('Tempo tarefa ' + tarefas[i])
-  // }
+  var render = new QueueRender()
+  render.render('queue-canvas', gerenciador.listaProcessadores)
 })
 
 var colorNames = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)']
@@ -70,7 +68,6 @@ class GerenciadorTarefas {
     var makespanAtual
     for (var i = 0; i < ite; i++) {
       this.gerarSolucao()
-      this.drawChart('#chart-area')
       makespanAtual = this.definirMakespanTotal(this.listaProcessadores)
       if(melhorMakespan > makespanAtual){
         melhorMakespan = makespanAtual
@@ -85,14 +82,16 @@ class GerenciadorTarefas {
   perturbarSolucaoAtual (fatorPertubacao) {
     var totalTarefasPerturbadas = Math.round(this.listaTarefasTotal.length * fatorPertubacao)
     var tarefasPerturbadas = 0
-    console.log('Rand ' + Math.random())
     while(totalTarefasPerturbadas !== tarefasPerturbadas){
       for (var i = 0; i < this.listaProcessadores.length; i++) {
-        for (var j = 0; j < this.listaProcessadores[i].getTarefasAlocadas.length; j++) {
+        for (var j = 0; j < this.listaProcessadores[i].getTarefasAlocadas().length; j++) {
+          console.log('Iniciou')
           if(Math.random() > 0.5){
             this.listaTarefasLivres.push(this.listaProcessadores[i].getTarefasAlocadas[j])
-            this.listaProcessadores[i].getTarefasAlocadas.slice(j, 1)
+            this.listaProcessadores[i].getTarefasAlocadas().splice(j - 1, 1)
             tarefasPerturbadas++
+            console.log('ACA' + tarefasPerturbadas)
+            j--
             if(tarefasPerturbadas === totalTarefasPerturbadas){
               return
             }
@@ -100,7 +99,6 @@ class GerenciadorTarefas {
         }
       }
     }
-    console.log('AA')
   }
 
   gravarMelhorSolucao () {
@@ -117,8 +115,8 @@ class GerenciadorTarefas {
     for (var j = 0; j < this.listaTarefasLivres.length; j++) {
       processadorAtual = this.verificarProcessadorMenorMakespan()
       processadorAtual.alocarTarefa(this.listaTarefasLivres[j])
-      this.listaTarefasLivres.splice(j, 1)
     }
+    this.listaTarefasLivres = []
     console.log('Total Makespan ' + this.definirMakespanTotal(this.listaProcessadores))
   }
 
@@ -150,6 +148,10 @@ class GerenciadorTarefas {
 
   getTarefas () {
     return this.listaTarefasTotal
+  }
+
+  getMelhorSolucao(){
+    return this.melhorSolucao
   }
 }
 
