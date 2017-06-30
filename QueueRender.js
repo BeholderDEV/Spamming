@@ -9,9 +9,22 @@ class QueueRender {
     this.actualColor++
     return this.colors[this.actualColor]
   }
+
+  invertColor(hexTripletColor) {
+    var color = hexTripletColor;
+    color = color.substring(1);           // remove #
+    color = parseInt(color, 16);          // convert to integer
+    color = 0xFFFFFF ^ color;             // invert three bytes
+    color = color.toString(16);           // convert to hex
+    color = ("000000" + color).slice(-6); // pad with leading zeros
+    color = "#" + color;                  // prepend #
+    return color;
+  }
+
   render (id, queue) {
     this.canvas = document.getElementById(id)
     this.canvasContext = this.canvas.getContext('2d')
+    this.canvasContext.font="30px Arial";
     // this.canvasContext.fillStyle = '#333'
     // this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height)
     this.colWidth = this.canvas.width / ((queue.length * 2 - 1) + 2)
@@ -21,6 +34,8 @@ class QueueRender {
         console.log(queue[i].tarefasAlocadas[j])
         this.canvasContext.fillStyle = this.getNextColor()
         this.canvasContext.fillRect((1+(i*2))*this.colWidth, this.canvas.height - (totalTilHere*this.colHeight) - (queue[i].tarefasAlocadas[j]*this.colHeight), this.colWidth, queue[i].tarefasAlocadas[j]*this.colHeight)
+        this.canvasContext.fillStyle = this.invertColor(this.canvasContext.fillStyle)
+        this.canvasContext.fillText(queue[i].tarefasAlocadas[j], ((1+(i*2))*this.colWidth)+(this.colWidth/2)-10, this.canvas.height - (totalTilHere*this.colHeight) - ((queue[i].tarefasAlocadas[j]*this.colHeight)/2)+10)
         totalTilHere += queue[i].tarefasAlocadas[j]
       }
       this.canvasContext.fillStyle = '#333'
