@@ -34,7 +34,7 @@ class QueueRender {
         console.log(queue[i].tarefasAlocadas[j])
         this.canvasContext.fillStyle = this.getNextColor()
         this.canvasContext.fillRect((1+(i*2))*this.colWidth, this.canvas.height - (totalTilHere*this.colHeight) - (queue[i].tarefasAlocadas[j]*this.colHeight), this.colWidth, queue[i].tarefasAlocadas[j]*this.colHeight)
-        this.canvasContext.fillStyle = this.invertColor(this.canvasContext.fillStyle)
+        this.canvasContext.fillStyle = "#ddd"
         this.canvasContext.fillText(queue[i].tarefasAlocadas[j], ((1+(i*2))*this.colWidth)+(this.colWidth/2)-10, this.canvas.height - (totalTilHere*this.colHeight) - ((queue[i].tarefasAlocadas[j]*this.colHeight)/2)+10)
         totalTilHere += queue[i].tarefasAlocadas[j]
       }
