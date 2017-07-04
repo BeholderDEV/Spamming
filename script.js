@@ -1,18 +1,37 @@
 var numeroProcessadores = 2
-var numeroIteracoes = 2
+var probabilidadeRetirar = 0.3
+var numeroIteracoes = 50
 var fatorPertubacao = 0.5 // Variar entre 0 e 1
 
 $(document).ready(function () {
   var gerenciador
   gerenciador = new GerenciadorTarefas(numeroProcessadores)
-  gerenciador.criarNovaTarefa(5)
-  gerenciador.criarNovaTarefa(10)
-  gerenciador.criarNovaTarefa(2)
-  gerenciador.criarNovaTarefa(5)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(1)
+  gerenciador.criarNovaTarefa(20)
+
   gerenciador.alocarTarefas(numeroIteracoes, fatorPertubacao)
   var render = new QueueRender()
   var histRender = new HistoryRender()
-  render.render('queue-canvas', gerenciador.listaProcessadores)
+  render.render('queue-canvas', gerenciador.melhorSolucao)
   histRender.render('hist-canvas', gerenciador.makespanHistory)
 })
 
@@ -64,14 +83,15 @@ class GerenciadorTarefas {
     while(totalTarefasPerturbadas !== tarefasPerturbadas){
       for (var i = 0; i < this.listaProcessadores.length; i++) {
         for (var j = 0; j < this.listaProcessadores[i].getTarefasAlocadas().length; j++) {
-          if(Math.random() > 0.5){
+          if(Math.random() < probabilidadeRetirar){
             this.listaTarefasLivres.push(this.listaProcessadores[i].tarefasAlocadas[j])
-            this.listaProcessadores[i].getTarefasAlocadas().splice(j - 1, 1)
+            this.listaProcessadores[i].tarefasAlocadas.splice(j, 1)
             tarefasPerturbadas++
             j--
             if(tarefasPerturbadas === totalTarefasPerturbadas){
               return
             }
+            break
           }
         }
       }
@@ -80,14 +100,11 @@ class GerenciadorTarefas {
 
   gravarMelhorSolucao () {
     for (var i = 0; i < this.listaProcessadores.length; i++) {
-      this.melhorSolucao[i].clonarTarefas(this.listaProcessadores[i])
+      this.melhorSolucao[i].clonarTarefas(this.listaProcessadores[i].tarefasAlocadas)
     }
   }
 
   gerarSolucao () {
-    for (var i = 0; i < this.listaTarefasLivres.length; i++) {
-      console.log('Tarefa com tempo '+ i + ': ' + this.listaTarefasLivres[i])
-    }
     var processadorAtual
     for (var j = 0; j < this.listaTarefasLivres.length; j++) {
       processadorAtual = this.verificarProcessadorMenorMakespan()
