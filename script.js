@@ -26,7 +26,7 @@ $(document).ready(function () {
   gerenciador.criarNovaTarefa(1)
   gerenciador.criarNovaTarefa(1)
   gerenciador.criarNovaTarefa(1)
-  gerenciador.criarNovaTarefa(20)
+  gerenciador.criarNovaTarefa(10)
 
   gerenciador.alocarTarefas(numeroIteracoes, fatorPertubacao)
   var render = new QueueRender()
@@ -62,6 +62,9 @@ class GerenciadorTarefas {
 
   alocarTarefas (ite, fatorPertubacao) {
     var melhorMakespan = Number.POSITIVE_INFINITY
+    this.listaTarefasLivres.sort(function(a,b){
+      return b-a
+    })
     var makespanAtual
     for (var i = 0; i < ite; i++) {
       this.gerarSolucao()
