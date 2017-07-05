@@ -3,24 +3,22 @@ var probabilidadeRetirar = 0.3
 var numeroIteracoes = 50
 var fatorPertubacao = 0.5 // Variar entre 0 e 1
 
-$(document).ready(function () {
+function alocar() {
   var gerenciador
-  gerenciador = new GerenciadorTarefas(numeroProcessadores)
-  gerenciador.criarNovaTarefa(10)
-  gerenciador.criarNovaTarefa(5)
-  gerenciador.criarNovaTarefa(3)
-  gerenciador.criarNovaTarefa(4)
-  gerenciador.criarNovaTarefa(7)
-  gerenciador.criarNovaTarefa(8)
-  gerenciador.criarNovaTarefa(9)
-
-
+  probabilidadeRetirar = +document.getElementById('probRetirar').value
+  numeroIteracoes = +document.getElementById('numeroInteracoes').value
+  fatorPertubacao = +document.getElementById('fatorPertubacao').value
+  gerenciador = new GerenciadorTarefas(+document.getElementById('numeroProcessadores').value)
+  for(var i = 1; i <= numeroTarefas ; i++)
+  {
+    gerenciador.criarNovaTarefa(+document.getElementById('input'+i).value)
+  }
   gerenciador.alocarTarefas(numeroIteracoes, fatorPertubacao)
   var render = new QueueRender()
   var histRender = new HistoryRender()
   render.render('queue-canvas', gerenciador.melhorSolucao)
   histRender.render('hist-canvas', gerenciador.makespanHistory)
-})
+}
 
 class GerenciadorTarefas {
   constructor (nProcessadores) {

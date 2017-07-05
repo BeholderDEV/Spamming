@@ -24,22 +24,35 @@ class QueueRender {
   render (id, queue) {
     this.canvas = document.getElementById(id)
     this.canvasContext = this.canvas.getContext('2d')
+    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // this.canvasContext.fillStyle = '#333'
     // this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height)
     this.colWidth = this.canvas.width / ((queue.length * 2 - 1) + 2)
     var maior = 0
+    var menor = queue[0].tarefasAlocadas[0]
     for(var i = 0 ; i < queue.length ; i++){
       var totalTilHere = 0
       for(var j = 0 ; j < queue[i].tarefasAlocadas.length ; j++){
         totalTilHere += queue[i].tarefasAlocadas[j]
+        if(queue[i].tarefasAlocadas[j] < menor){
+          menor = queue[i].tarefasAlocadas[j]
+        }
       }
       if(totalTilHere > maior){
         maior = totalTilHere
       }
     }
     this.colHeight = (this.canvas.height-60) / maior
-    this.canvasContext.font= this.colHeight*0.9+'px Arial'
+    var font = this.colHeight*menor
+    if(this.colWidth < this.colHeight){
+      font = this.colWidth
+    }
+    if(font > 30){
+      font = 30
+    }
+
+    this.canvasContext.font= font+'px Arial'
     for(var i = 0 ; i < queue.length ; i++){
       var totalTilHere = 0
       for(var j = 0 ; j < queue[i].tarefasAlocadas.length ; j++){

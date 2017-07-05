@@ -10,6 +10,7 @@ class HistoryRender {
   render (id, hist) {
     this.canvas = document.getElementById(id)
     this.canvasContext = this.canvas.getContext('2d')
+    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // this.canvasContext.font="30px Arial";
     // this.canvasContext.fillStyle = '#333'
     // this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height)
